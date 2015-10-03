@@ -90,5 +90,5 @@ let_notes = ['r', 'c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b
 for note_rhy in music:
     note_rhy[0] = let_notes[note_rhy[0]]
 
-import pysynth
+import pysynth as pysynth
 pysynth.make_wav(music, fn='out.wav')
