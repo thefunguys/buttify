@@ -21,6 +21,7 @@ def getNote(array):
             break
     return i+1
 
+
 def makeArray(Notes, pgood, pok, pbad):
     ngood = 0.
     nok = 0.
@@ -123,11 +124,18 @@ bass_rhy.append([8,8,8,8])
 bass_rhy.append([8,8,8,8])
 bass_rhy.append([8,8,8,8])
 
+r_rhy = []
+r_rhy.append([8,8,8,8,8,8,8,8])
+r_rhy.append([8,8,8,8,0,8,8,8])
+r_rhy.append([0,8,8,8,0,8,8,8])
+r_rhy.append([8,8,8,4,0,0,8])
 
 Bass_beat = []
 bass_size = 4
 Guitar_beat = []
 guitar_size = 2
+Rhythm_beat = []
+r_size = 2
 
 picks = pickBeat(bass_rhy,bass_size)
 for i in range(bass_size):
@@ -137,20 +145,37 @@ picks = pickBeat(guitar_rhy,guitar_size)
 for i in range(guitar_size):
     Guitar_beat.append(guitar_rhy[i])
 
-M7 = makeArray(M7, 0.75, 0.2, 0.05)
-m7 = makeArray(m7, 0.75, 0.2, 0.05)
-Mpent = makeArray(Mpent, 0.9, 0.08, 0.02)
-mpent = makeArray(mpent, 0.9, 0.08, 0.02)
-    
+picks = pickBeat(r_rhy,r_size)
+for i in range(r_size):
+    Rhythm_beat.append(r_rhy[i])
 
+M7g = makeArray(M7, 0.75, 0.2, 0.05)
+m7g = makeArray(m7, 0.75, 0.2, 0.05)
+Mpentb = makeArray(Mpent, 0.9, 0.08, 0.02)
+mpentb = makeArray(mpent, 0.9, 0.08, 0.02)
+n1 = [1,1,1,1,1,1,1,1,1,1,1,1,1]
+nM3 = [0,0,0,0,1,1,1,1,1,1,1,1,1]
+nM7 = [0,0,0,0,0,0,0,0,0,0,0,1,1]
+nm3 = [0,0,0,1,1,1,1,1,1,1,1,1,1]
+nm7 = [0,0,0,0,0,0,0,0,0,0,1,1,1]
+
+
+pick_prog = I_V
 
 #for i in range(size_rhythm):
-musicb = GetLine(Bass_beat,I_V,notes, Mpent, mpent, 8)
-musicg = GetLine(Guitar_beat,I_V,notes, M7, m7, 20)
+musicb = GetLine(Bass_beat,pick_prog,notes, Mpentb, mpentb, 8)
+musicg = GetLine(Guitar_beat,pick_prog,notes, M7g, m7g, 32)
+r1 = GetLine(Rhythm_beat, pick_prog, notes, n1, n1, 20)
+r3 = GetLine(Rhythm_beat, pick_prog, notes, nM3, nm3, 20)
+r7 = GetLine(Rhythm_beat, pick_prog, notes, nM7, nm7, 20)
 
 import pysynth as pysynth
 pysynth.make_wav(musicb, fn="bass.wav")
 pysynth.make_wav(musicg, fn="guitar.wav")
+pysynth.make_wav(r1, fn="r1.wav")
+pysynth.make_wav(r3, fn="r3.wav")
+pysynth.make_wav(r7, fn="r7.wav")
+
 
 
 
