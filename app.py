@@ -2,7 +2,6 @@ import subprocess
 from flask import Flask
 
 app = Flask(__name__)
-app.config['SERVER_NAME'] = 'veep.vandeets.com:8080'
 
 @app.route('/')
 def get_song():
@@ -10,4 +9,4 @@ def get_song():
     return """<audio controls><source src="static/song.wav" type="audio/wav"></audio>"""   
 
 if __name__=='__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=80)
