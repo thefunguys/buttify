@@ -72,21 +72,23 @@ rhyArr.append([8,8,8,8])
 rhyArr.append([4,4])
 rhyArr.append([8,8,4])
 rhyArr.append([8,4,8])
-rhyArr.append([16,16,4,16,16])
+rhyArr.append([0,0,4,0,0])
 
 pickBassBeat(rhyArr)
 num_notes=0
 music = []
 for i in range(size_rhythm):
     for j in rhyArr[i]:
-        note = 0
+        tmp_note = 0
         if j != 0:
-            note = getNote(m7)
-        music.append([note,j])
+            tmp_note = getNote(mpent)
+        else:
+            j=16
+        music.append([tmp_note,j])
 
-notes = ['r', 'c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b', 'c5']
-for note in music:
-    note[0] = notes[note[0]]
+let_notes = ['r', 'c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b', 'c5']
+for note_rhy in music:
+    note_rhy[0] = let_notes[note_rhy[0]]
 
 import pysynth
 pysynth.make_wav(music, fn='out.wav')
