@@ -5,8 +5,11 @@ root = 0
 good = 1
 ok = 2
 bad = 3
-size_rhythm = 4
 bass_bottom = 8
+M7 = [0,3,2,3,1,2,3,1,3,2,3,1,1]
+m7 = [0,3,2,1,3,2,3,1,2,3,1,3,1]
+Mpent = [0,3,2,3,1,1,3,1,3,2,3,2,1]
+mpent = [0,3,2,1,3,1,3,1,2,3,2,3,1]
 
 
 
@@ -18,10 +21,7 @@ def getNote(array):
             break
     return i+1
 
-def makeArray(Notes):
-    pgood = 0.85
-    pok = 0.12
-    pbad = 0.03
+def makeArray(Notes, pgood, pok, pbad):
     ngood = 0.
     nok = 0.
     nbad = 0.
@@ -66,7 +66,7 @@ def readNotes():
 
 
 
-def pickBassBeat(Array):
+def pickBeat(Array, size_rhythm):
     picks = [0] * size_rhythm
     for i in range(size_rhythm):
         x = random.randint(0,len(Array))
@@ -74,18 +74,19 @@ def pickBassBeat(Array):
 
     return picks
 
-def BassLine(beat,prog,notes,scales):
+def GetLine(beat,prog,notes,M, m, bottom):
     music = []
+    
     for k in prog:
         for rhy_pat in beat:
             for j in rhy_pat:
                 val = 0
                 if j != 0:
                     if k == 10:
-                        val = getNote(scales[3])
+                        val = getNote(m)
                     else:
-                        val = getNote(scales[2])
-                    letter = notes[val + bass_bottom + k - 1]
+                        val = getNote(M)
+                    letter = notes[val + bottom + k - 1]
                 else:
                     letter = 'r'
                     j=16
@@ -95,6 +96,8 @@ def BassLine(beat,prog,notes,scales):
     return music
 
 
+
+
 notes = readNotes()
 
 I_V = [1,8,10,6]
@@ -102,39 +105,53 @@ vi_IV = [10,6,1,8]
 IV_I = [6,1,8,10]
 
 
-scales = []
-M7 = [0,3,2,3,1,2,3,1,3,2,3,1,1]
-m7 = [0,3,2,1,3,2,3,1,2,3,1,3,1]
-Mpent = [0,3,2,3,1,1,3,1,3,2,3,2,1]
-mpent = [0,3,2,1,3,1,3,1,2,3,2,3,1]
-scales.append(makeArray(M7))
-scales.append(makeArray(m7))
-scales.append(makeArray(Mpent))
-scales.append(makeArray(mpent))
+
+guitar_rhy = []
+guitar_rhy.append([8,8,8,8,8,8,8,8])
+guitar_rhy.append([8,16,16,16,16,16,16,16,16,8,4])
+guitar_rhy.append([8,16,8,16,-8,16,8,8,16,16])
+guitar_rhy.append([-8,16,16,16,16,8,8,16,16,16,8])
+guitar_rhy.append([-8,-8,4,8,4])
+guitar_rhy.append([-8,-8,-8,-8,16,-8])
 
 
-rhyArr = []
-rhyArr.append([2,2,2,2])
-rhyArr.append([4,4])
-rhyArr.append([2,2,4])
-rhyArr.append([2,4,2])
-rhyArr.append([0,0,4,0,0])
+bass_rhy = []
+bass_rhy.append([8,8,8,8])
+bass_rhy.append([8,8,8,8])
+bass_rhy.append([8,8,8,8])
+bass_rhy.append([8,8,8,8])
+bass_rhy.append([8,8,8,8])
+bass_rhy.append([8,8,8,8])
 
-beat = []
-picks = pickBassBeat(rhyArr)
-for i in range(size_rhythm):
-    beat.append(rhyArr[i])
 
-num_notes=0
+Bass_beat = []
+bass_size = 4
+Guitar_beat = []
+guitar_size = 2
+
+picks = pickBeat(bass_rhy,bass_size)
+for i in range(bass_size):
+    Bass_beat.append(bass_rhy[i])
+
+picks = pickBeat(guitar_rhy,guitar_size)
+for i in range(guitar_size):
+    Guitar_beat.append(guitar_rhy[i])
+
+M7 = makeArray(M7, 0.75, 0.2, 0.05)
+m7 = makeArray(m7, 0.75, 0.2, 0.05)
+Mpent = makeArray(Mpent, 0.9, 0.08, 0.02)
+mpent = makeArray(mpent, 0.9, 0.08, 0.02)
+    
 
 
 #for i in range(size_rhythm):
-music = BassLine(beat,I_V,notes, scales)
-print music
-
+musicb = GetLine(Bass_beat,I_V,notes, Mpent, mpent, 8)
+musicg = GetLine(Guitar_beat,I_V,notes, M7, m7, 20)
 
 import pysynth as pysynth
-pysynth.make_wav(music, fn="bass.wav")
+pysynth.make_wav(musicb, fn="bass.wav")
+pysynth.make_wav(musicg, fn="guitar.wav")
+
 
 
 
