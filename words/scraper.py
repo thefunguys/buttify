@@ -15,8 +15,8 @@ for l in songs.find_all(href=re.compile(band)):
     if not lyrics:
         continue
     for word in lyrics.get_text().split():
-        new = wordnet.morphy(word)
+        new = wordnet.morphy(re.sub('[.,-]', ' ', word.lower()))
         if new:
             print word, 
 
-    print ' '
+    print ''

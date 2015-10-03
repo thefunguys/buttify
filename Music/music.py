@@ -57,7 +57,6 @@ def pickBassBeat(Array):
 
     return picks
 
-
 M7 = [0,3,2,3,1,2,3,1,3,2,3,1,1]
 m7 = [0,3,2,1,3,2,3,1,2,3,1,3,1]
 Mpent = [0,3,2,3,1,1,3,1,3,2,3,2,1]
@@ -69,11 +68,11 @@ mpent = makeArray(mpent)
 
 
 rhyArr = []
-rhyArr.append([2,2,2,2])
+rhyArr.append([8,8,8,8])
 rhyArr.append([4,4])
-rhyArr.append([2,2,4])
-rhyArr.append([2,4,2])
-rhyArr.append([0,0,4,0,0])
+rhyArr.append([8,8,4])
+rhyArr.append([8,4,8])
+rhyArr.append([16,16,4,16,16])
 
 pickBassBeat(rhyArr)
 num_notes=0
@@ -85,10 +84,9 @@ for i in range(size_rhythm):
             note = getNote(m7)
         music.append([note,j])
 
+notes = ['r', 'c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b', 'c5']
+for note in music:
+    note[0] = notes[note[0]]
 
-print music
-
-
-
-
-
+import pysynth
+pysynth.make_wav(music, fn='out.wav')
