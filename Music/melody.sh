@@ -1,3 +1,4 @@
+#!/bin/sh
 python music.py
 mv out.wav out1.wav
 python music.py
