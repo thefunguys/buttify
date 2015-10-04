@@ -1,5 +1,9 @@
 import numpy as np
 import random
+from datetime import datetime
+
+random.seed(datetime.now())
+
 
 root = 0
 good = 1
@@ -12,7 +16,6 @@ Mpent = [0,3,2,3,1,1,3,1,3,2,3,2,1]
 mpent = [0,3,2,1,3,1,3,1,2,3,2,3,1]
 
 
-
 def getNote(array):
     x = random.random()
     for i in range(len(array)):
@@ -21,8 +24,98 @@ def getNote(array):
             break
     return i+1
 
+def GetMelody(beat,prog,notes,M, m, bottom):
+    music = []
+    prevnote = 0
+    prevtype = 1
 
-def makeArray(Notes, pgood, pok, pbad):
+    Mmod= list(M)
+    mmod = list(m)
+    Mmod[0] = Mmod[0]+1
+    mmod[0] = mmod[0]+1
+    Mmodp = makeArray(Mmod,0.85, 0.1, 0.05)
+    mmodp = makeArray(mmod,0.85, 0.1, 0.05)
+
+    for k in prog:
+        for rhy_pat in beat:
+            for j in rhy_pat:
+                print 'prevtype: ', prevtype
+                val = 0
+                condition = 0
+                if prevtype == 1:
+                    condition = 2
+                elif prevtype != 1:
+                    condition = 4
+                else:
+                    condition = 10
+                    
+                if j != 0:
+                    if k == 10:
+                        val = getNote(changeArray(mmod, condition,prevnote , mmodp))
+                        prevtype = mmod[val-1]
+                    else:
+                        val = getNote(changeArray(Mmod, condition, prevnote, Mmodp))
+                        prevtype = Mmod[val-1]
+                    prevnote = val
+                    
+                    letter = notes[val + bottom + k - 1]
+                else:
+                    letter = 'r'
+                    j=16
+                music.append([letter, j])
+        
+    return music
+
+def changeArray(scalenotes, condition,note_played, probsgiven):
+    #conditions are:
+    # 1 = note is 16, so want to move
+    # 2 = note is a 1 want to stay
+    # 4 = note is a 2 want to move
+    # 3, 5 =  2 and 4 with condition 1 as well
+    probsA = list(probsgiven)
+    prob = 0.3
+    reduc = 1. - prob
+    size = len(probsA)
+
+    for i in range(size):
+        probsA[i] = probsA[i]*reduc
+
+    if condition == 2:
+        for i in range(size-note_played):
+            probsA[note_played + i] = probsA[note_played + i] + prob
+    
+    elif condition == 4:
+        for i in range(2):
+            if note_played-i-1 >=0 and scalenotes[note_played-i-1]==1:
+                for j in range(size - (note_played-i-1)):
+                    probsA[note_played-i-i+j] = probsA[note_played-i-1+j] + prob/2.
+
+            if note_played+i+1 <size and scalenotes[note_played+i+1]==1:
+                for j in range(size - (note_played+i+1)):
+                    probsA[note_played+i+1] = probsA[note_played+i+1] + prob/2.
+    
+    else:
+        return probsgiven
+    #print "test"
+    #print probsA
+
+
+
+#    elif condition == 1:
+#        if note_played-1 >=0:
+#            probsA[note_played-1] = probsA[note_played-1] + prob/2.
+#
+#        if note_played+i+1 < size:
+#            probsA[note_played+1] = probsA[note_played+1] + prob/2.
+#
+        
+    return probsA
+
+
+
+
+def makeArray(ns, pgood, pok, pbad):
+    Notes = list(ns)
     ngood = 0.
     nok = 0.
     nbad = 0.
@@ -126,9 +219,9 @@ bass_rhy.append([8,8,8,8])
 
 r_rhy = []
 r_rhy.append([8,8,8,8,8,8,8,8])
-r_rhy.append([8,8,8,8,0,8,8,8])
-r_rhy.append([0,8,8,8,0,8,8,8])
-r_rhy.append([8,8,8,4,0,0,8])
+r_rhy.append([8,8,8,8,0,0,8,8,8])
+r_rhy.append([0,8,8,8,0,0,8,8,8])
+r_rhy.append([8,8,8,-4,0,0,8])
 
 Bass_beat = []
 bass_size = 4
@@ -164,18 +257,18 @@ pick_prog = I_V
 
 #for i in range(size_rhythm):
 musicb = GetLine(Bass_beat,pick_prog,notes, Mpentb, mpentb, 8)
-musicg = GetLine(Guitar_beat,pick_prog,notes, M7g, m7g, 32)
+musicg = GetMelody(Guitar_beat,pick_prog,notes, M7, m7, 32)
 r1 = GetLine(Rhythm_beat, pick_prog, notes, n1, n1, 20)
 r3 = GetLine(Rhythm_beat, pick_prog, notes, nM3, nm3, 20)
 r7 = GetLine(Rhythm_beat, pick_prog, notes, nM7, nm7, 20)
 
-import pysynth as pysynth
+import pysynth_e as pysynth
 pysynth.make_wav(musicb, fn="bass.wav")
 pysynth.make_wav(musicg, fn="guitar.wav")
 pysynth.make_wav(r1, fn="r1.wav")
 pysynth.make_wav(r3, fn="r3.wav")
 pysynth.make_wav(r7, fn="r7.wav")
-
+#
 
 
 

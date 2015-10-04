@@ -3,8 +3,8 @@ from nltk.corpus import wordnet
 import requests
 import re
 
-band = 'arctic-monkeys'
-album = 'am'
+band = 'fergie'
+album = 'the-dutchess'
 
 songs = BeautifulSoup(requests.get('http://www.songlyrics.com/' + band + '/' + album + '/').text, "lxml")
 
@@ -14,9 +14,8 @@ for l in songs.find_all(href=re.compile(band)):
     lyrics = soup.find('p', id='songLyricsDiv')
     if not lyrics:
         continue
-    for word in lyrics.get_text().split():
-        new = wordnet.morphy(re.sub('[.,-]', ' ', word.lower()))
-        if new:
-            print word, 
-
-    print ''
+    text = lyrics.get_text().encode('ascii', 'ignore')
+    text = re.sub('<.+?>', '', text);
+    text = re.sub('\\[.+?\\]', '', text);
+    text = re.sub('\\(.+?\\)', '', text);
+    print text
