@@ -5,4 +5,4 @@ done
 
 sox voice2.wav tmp.wav pitch 50
 mv tmp.wav voice2.wav
-sox voice1.wav voice2.wav voice1.wav voice3.wav -r 44100 out.wav delay 3
+sox voice1.wav voice2.wav voice1.wav voice3.wav -r 44100 out.wav delay 3 gain -2
