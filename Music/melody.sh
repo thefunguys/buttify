@@ -9,8 +9,8 @@ do
 
 done
 
-sox bassb_t.wav basse_t.wav newbass1.wav 
-sox guitar_t.wav newguitar1.wav 
+sox bassb_t.wav basse_t.wav newbass1.wav gain +14
+sox guitar_t.wav newguitar1.wav overdrive vol 0.25 
 sox -m r1.wav r3.wav r7.wav rhythm.wav
 
 echo "First Read"
@@ -26,8 +26,8 @@ do
 
 done
 
-sox bassb_t.wav basse_t.wav newbass2.wav 
-sox guitar_t.wav newguitar2.wav
+sox bassb_t.wav basse_t.wav newbass2.wav gain +14
+sox guitar_t.wav newguitar2.wav overdrive vol 0.25
 
 rm bass*
 rm guitar*
