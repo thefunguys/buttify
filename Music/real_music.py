@@ -39,7 +39,6 @@ def GetMelody(beat,prog,notes,M, m, bottom):
     for k in prog:
         for rhy_pat in beat:
             for j in rhy_pat:
-                print 'prevtype: ', prevtype
                 val = 0
                 condition = 0
                 if prevtype == 1:
@@ -88,7 +87,7 @@ def changeArray(scalenotes, condition,note_played, probsgiven):
         for i in range(2):
             if note_played-i-1 >=0 and scalenotes[note_played-i-1]==1:
                 for j in range(size - (note_played-i-1)):
-                    probsA[note_played-i-i+j] = probsA[note_played-i-1+j] + prob/2.
+                    probsA[note_played-i-1+j] = probsA[note_played-i-1+j] + prob/2.
 
             if note_played+i+1 <size and scalenotes[note_played+i+1]==1:
                 for j in range(size - (note_played+i+1)):
@@ -163,7 +162,7 @@ def readNotes():
 def pickBeat(Array, size_rhythm):
     picks = [0] * size_rhythm
     for i in range(size_rhythm):
-        x = random.randint(0,len(Array))
+        x = random.randint(0,len(Array)-1)
         picks[i]= x
 
     return picks
@@ -183,7 +182,7 @@ def GetLine(beat,prog,notes,M, m, bottom):
                     letter = notes[val + bottom + k - 1]
                 else:
                     letter = 'r'
-                    j=16
+                    j=8
                     
                 music.append([letter,j])
         
@@ -194,9 +193,11 @@ def GetLine(beat,prog,notes,M, m, bottom):
 
 notes = readNotes()
 
-I_V = [1,8,10,6]
-vi_IV = [10,6,1,8]
-IV_I = [6,1,8,10]
+the_progs = []
+
+the_progs.append([1,8,10,6])
+the_progs.append([10,6,1,8])
+the_progs.append([6,1,8,10])
 
 
 
@@ -211,19 +212,20 @@ guitar_rhy.append([-8,-8,-8,-8,16,-8])
 
 bass_rhy = []
 bass_rhy.append([8,8,8,8])
-bass_rhy.append([8,8,8,8])
-bass_rhy.append([8,8,8,8])
-bass_rhy.append([8,8,8,8])
-bass_rhy.append([8,8,8,8])
-bass_rhy.append([8,8,8,8])
+bass_rhy.append([8,8,-8,16])
+bass_rhy.append([8,4,8])
+bass_rhy.append([4,4])
+bass_rhy.append([2])
+bass_rhy.append([-4,8])
 
 r_rhy = []
 r_rhy.append([8,8,8,8,8,8,8,8])
-r_rhy.append([8,8,8,8,0,0,8,8,8])
-r_rhy.append([0,8,8,8,0,0,8,8,8])
-r_rhy.append([8,8,8,-4,0,0,8])
+r_rhy.append([8,8,8,8,0,8,8,8])
+r_rhy.append([0,8,8,8,0,8,8,8])
+r_rhy.append([8,8,8,-4,0,8])
 
 Bass_beat = []
+Bass_beat2 = []
 bass_size = 4
 Guitar_beat = []
 guitar_size = 2
@@ -232,16 +234,22 @@ r_size = 2
 
 picks = pickBeat(bass_rhy,bass_size)
 for i in range(bass_size):
-    Bass_beat.append(bass_rhy[i])
+    Bass_beat.append(bass_rhy[picks[i]])
 
+picks = pickBeat(bass_rhy,bass_size)
+for i in range(bass_size):
+    Bass_beat2.append(bass_rhy[picks[i]])
+    
 picks = pickBeat(guitar_rhy,guitar_size)
 for i in range(guitar_size):
-    Guitar_beat.append(guitar_rhy[i])
+    Guitar_beat.append(guitar_rhy[picks[i]])
 
 picks = pickBeat(r_rhy,r_size)
 for i in range(r_size):
-    Rhythm_beat.append(r_rhy[i])
+    Rhythm_beat.append(r_rhy[picks[i]])
 
+
+    
 M7g = makeArray(M7, 0.75, 0.2, 0.05)
 m7g = makeArray(m7, 0.75, 0.2, 0.05)
 Mpentb = makeArray(Mpent, 0.9, 0.08, 0.02)
@@ -253,22 +261,27 @@ nm3 = [0,0,0,1,1,1,1,1,1,1,1,1,1]
 nm7 = [0,0,0,0,0,0,0,0,0,0,1,1,1]
 
 
-pick_prog = I_V
+pick_prog = the_progs[random.randint(0,len(the_progs)-1)]
 
 #for i in range(size_rhythm):
 musicb = GetLine(Bass_beat,pick_prog,notes, Mpentb, mpentb, 8)
+musicb2 = GetLine(Bass_beat2,pick_prog,notes, Mpentb, mpentb, 8)
 musicg = GetMelody(Guitar_beat,pick_prog,notes, M7, m7, 32)
 r1 = GetLine(Rhythm_beat, pick_prog, notes, n1, n1, 20)
 r3 = GetLine(Rhythm_beat, pick_prog, notes, nM3, nm3, 20)
 r7 = GetLine(Rhythm_beat, pick_prog, notes, nM7, nm7, 20)
 
-import pysynth_e as pysynth
-pysynth.make_wav(musicb, fn="bass.wav")
-pysynth.make_wav(musicg, fn="guitar.wav")
-pysynth.make_wav(r1, fn="r1.wav")
-pysynth.make_wav(r3, fn="r3.wav")
-pysynth.make_wav(r7, fn="r7.wav")
-#
+import pysynth as A_synth
+import pysynth_b as B_synth
+import pysynth_e as E_synth
+
+B_synth.make_wav(musicb, fn="bassb.wav", bpm=120)
+B_synth.make_wav(musicb2, fn="basse.wav", bpm=120)
+E_synth.make_wav(musicg, fn="guitar.wav", bpm=120)
+A_synth.make_wav(r1, fn="r1.wav", bpm=120)
+A_synth.make_wav(r3, fn="r3.wav", bpm=120)
+A_synth.make_wav(r7, fn="r7.wav", bpm=120)
+##
 
 
 
