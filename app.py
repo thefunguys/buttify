@@ -10,7 +10,7 @@ def index():
     songs = [song for song in os.listdir('static') if '.wav' in song]
     ret = ''
     for song in songs:
-        ret += '<a href=\"song/' + song + '\">' + song + '</a>'
+        ret += '<a href=\"song/' + song + '\">' + song + '</a><br />'
     return ret
     
 
@@ -18,6 +18,9 @@ def index():
 def get_song(song):
     return '<audio controls><source src=\"../static/' + song + '\" type=\"audio/wav\"></audio>'
 
+@app.route('/albums')
+def get_albums():
+    return '<br>'.join(os.listdir('words/albums'))
 
 @app.route('/<album>')
 def album_song(album):
