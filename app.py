@@ -5,8 +5,13 @@ from flask import Flask, make_response
 app = Flask(__name__)
 
 @app.route('/')
+def index():
+    	
+    
+
+@app.route('/song/<song>')
 def get_song():
-    return album_song('am')
+
 
 @app.route('/<album>')
 def album_song(album):
