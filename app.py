@@ -1,4 +1,5 @@
 import subprocess
+import os
 from time import time
 from flask import Flask, make_response
 
@@ -6,11 +7,13 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    	
+    songs = [song for song in os.listdir('static') if '.wav' in song]
+    return ' '.join(songs)
     
 
 @app.route('/song/<song>')
 def get_song():
+    return 'song'
 
 
 @app.route('/<album>')
