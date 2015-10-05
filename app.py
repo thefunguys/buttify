@@ -8,12 +8,15 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     songs = [song for song in os.listdir('static') if '.wav' in song]
-    return ' '.join(songs)
+    ret = ''
+    for song in songs:
+        ret += '<a href=\"song/' + song + '\">' + song + '</a>'
+    return ret
     
 
 @app.route('/song/<song>')
-def get_song():
-    return 'song'
+def get_song(song):
+    return '<audio controls><source src=\"../static/' + song + '\" type=\"audio/wav\"></audio>'
 
 
 @app.route('/<album>')
