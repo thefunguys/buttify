@@ -1,6 +1,6 @@
 #!/bin/sh
 for i in `seq 1 3`; do
-    ./grammy.py --depth=4 --length=500 $1 | espeak -p 60 -s 100 -w voice$i.wav
+    ./grammy.py --depth=4 --length=500 $1 | espeak -p 60 -s 100 -ven+m3 -w voice$i.wav
 done
 
 sox voice2.wav tmp.wav pitch 50
